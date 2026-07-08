@@ -1,1 +1,1091 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: white;
+      font-family: Arial;
+      text-align: center;
+    }
 
+    .img {
+      width: min(60%, 600px); /* CHANGE SIZE HERE */
+      
+      object-fit: cover;
+      margin: 20px auto;
+      display: block;
+      background: #f3f3f3;    /* 👈 placeholder color so it doesn't look empty */
+    }
+
+    /* CHANGE THIS VALUE WHENEVER YOU WANT */
+    .img-large {
+      width: min(90%, 850px);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* PRICE SECTION */
+    .pricing {
+      margin-top: 50px;
+      width: 100%;
+    }
+
+    .card {
+      width: 300px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 10px auto;
+      background: white;
+      font-size: 22px;    /* ← Change this */
+      font-weight: bold;
+    }
+
+    .active {
+        border: 6px solid green;
+        box-shadow: 0 0 20px rgba(0,255,0,0.3);
+        animation:
+            activeGlow 2.5s infinite ease-in-out,
+            heartbeat 1.8s infinite;
+    }
+
+    @keyframes heartbeat {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        8% {
+            transform: scale(1.04);
+        }
+
+        16% {
+            transform: scale(1);
+        }
+
+        24% {
+            transform: scale(1.04);
+        }
+
+        32% {
+            transform: scale(1);
+        }
+    }
+    .price {
+      font-size: 54px;
+      font-weight: bold;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 30px 50px;
+      border: none;
+      background: black;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 22px;    /* ← Change this */
+      font-weight: bold;  
+    }
+
+    button:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+
+    .divider {
+      width: 80%;
+      margin: 20px auto;
+      height: 4px;
+      background: repeating-linear-gradient(
+        to right,
+        black 0px,
+        black 6px,
+        transparent 6px,
+        transparent 12px
+      );
+      opacity: 0.5;
+    }
+
+    .floating-price{
+        position: fixed;
+        left: 20px;
+        top: 80%;
+        transform: translateY(-50%);
+        background: #16a34a;
+        color: white;
+        font-size: 22px;      /* ← Text size */
+        font-weight: bold;
+        padding: 18px 20px;
+        border-radius: 999px;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(0,0,0,.25);
+        z-index: 9999;
+        transition: .25s;
+        user-select: none;
+
+        animation: pulse 1.8s infinite;
+    }
+
+    .floating-price:hover{
+        transform: translateY(-50%) scale(1.08);
+    }
+
+    @keyframes pulse{
+        0%{
+            box-shadow:0 0 0 0 rgba(22,163,74,.6);
+        }
+        70%{
+            box-shadow:0 0 0 18px rgba(22,163,74,0);
+        }
+        100%{
+            box-shadow:0 0 0 0 rgba(22,163,74,0);
+        }
+    }
+
+    /* Mobile */
+    @media(max-width:768px){
+
+        .floating-price{
+            left:10px;
+            bottom:20px;
+            top:auto;
+            transform:none;
+            font-size:14px;
+            padding:12px 16px;
+        }
+
+        .floating-price:hover{
+            transform:scale(1.05);
+        }
+
+    }
+
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: #7dd3fc; /* light icy blue */
+      font-size: 1em;
+      user-select: none;
+      pointer-events: none;
+      z-index: 9999;
+      animation: fall linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
+
+    .video{
+        width: min(40%, 500px);
+        max-width: 900px;
+        display: block;
+        margin: 30px auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+
+    #adminBtn{
+
+        position:fixed;
+
+        top:15px;
+        right:15px;
+
+        background:#111;
+
+        color:white;
+
+        padding:20px 28px;
+
+        border-radius:30px;
+
+        cursor:pointer;
+
+        z-index:99999;
+
+        font-size:18px;
+
+        font-weight:bold;
+
+        box-shadow:0 5px 15px rgba(0,0,0,.25);
+
+        transition:.25s;
+
+    }
+
+    #adminBtn:hover{
+
+        transform:scale(1.05);
+
+    }
+
+
+    .admin-panel{
+        position: fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background: rgba(0,0,0,0.6);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        z-index:999999;
+    }
+
+    .admin-box{
+        background:white;
+        padding:20px;
+        width:400px;
+        border-radius:10px;
+    }
+
+    .admin-item{
+        border:1px solid #ddd;
+        padding:10px;
+        margin:10px 0;
+        border-radius:8px;
+    }
+
+    .admin-item input{
+        width:100%;
+        padding:8px;
+        margin-top:5px;
+    }
+
+    .admin-item label{
+        font-weight:bold;
+    }
+
+    .card.disabled {
+        opacity: 0.4;
+        filter: grayscale(100%);
+        pointer-events: none;
+        transform: scale(0.98);
+    }
+
+
+    .buy-panel{
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,.6);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        z-index:999999;
+    }
+
+    .buy-box{
+        background:white;
+        width:350px;
+        padding:25px;
+        border-radius:15px;
+        text-align:center;
+    }
+
+    .buy-box h2{
+        margin-top:0;
+    }
+
+    .buy-box input{
+        width:90%;
+        padding:12px;
+        margin:8px;
+        font-size:18px;
+        border:1px solid #ccc;
+        border-radius:8px;
+    }
+
+    .buy-box button{
+        width:90%;
+        padding:15px;
+        margin-top:10px;
+    }
+
+    .close-buy{
+        background:#777;
+    }
+
+    #downloadBtn{
+
+        position:fixed;
+
+        top:85px;
+        right:15px;
+
+        background:#2563eb;
+
+        color:white;
+
+        padding:20px 28px;
+
+        border-radius:30px;
+
+        cursor:pointer;
+
+        z-index:99999;
+
+        font-size:20px;
+
+        font-weight:bold;
+
+        box-shadow:0 5px 15px rgba(0,0,0,.25);
+
+        transition:.25s;
+
+    }
+
+
+    #downloadBtn:hover{
+
+        transform:scale(1.05);
+
+    }
+
+
+    .download-panel{
+
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+
+        background:rgba(0,0,0,.6);
+
+        display:none;
+
+        justify-content:center;
+        align-items:center;
+
+        z-index:999999;
+
+    }
+
+
+    .download-box{
+
+        background:white;
+
+        padding:30px;
+
+        width:350px;
+
+        border-radius:15px;
+
+        text-align:center;
+
+    }
+
+
+    .download-box input{
+
+        width:90%;
+
+        padding:12px;
+
+        font-size:20px;
+
+        margin:15px;
+
+    }
+
+
+    .download-result{
+
+        margin-top:20px;
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div id="adminBtn" onclick="showLogin()">
+    🔒 Admin
+</div>
+
+<div id="downloadBtn" onclick="showDownloadPanel()">
+    📘 eBook Anda
+</div>
+
+<div id="adminPanel" class="admin-panel">
+
+  <div class="admin-box">
+
+    <h2>🔐 ADMIN PANEL</h2>
+
+    <div id="adminPricing"></div>
+
+    <button onclick="savePricing()">💾 SAVE</button>
+    <button onclick="closeAdmin()">CLOSE</button>
+
+  </div>
+
+</div>
+
+<div id="downloadPanel" class="download-panel">
+
+
+<div class="download-box">
+
+
+<h2>
+📘 Download Ebook Anda
+</h2>
+
+
+<p>
+Masukkan nombor telefon pembelian
+</p>
+
+
+<input 
+id="downloadPhone"
+placeholder="Contoh: 0104464144">
+
+
+<br>
+
+
+<button onclick="checkEbook()">
+
+SEMAK PEMBELIAN
+
+</button>
+
+
+
+<div id="downloadResult" class="download-result">
+
+</div>
+
+
+
+<button onclick="closeDownload()">
+
+Tutup
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+<div class="container">
+
+  <!-- 🖼️ IMAGES ONLY (CLEAN START) -->
+
+  <img class="img img-large" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/new%203%20image%20landing%20page/logo%20j%20travel%20winter.png">
+
+  <div class="divider"></div>
+  <video
+      class="video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata">
+
+      <source
+          src="https://raw.githubusercontent.com/julf95/classroom/main/0628%20(2).mp4"
+          type="video/mp4">
+
+  </video>
+
+  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%203%20image%20landing%20page/intro%20diri.png">
+
+  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%203%20image%20landing%20page/gambar%203%20intro.png">
+  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%203%20image%20landing%20page/little%20swiss.png">
+
+  
+
+  <div class="divider"></div>
+
+  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/Image%20landing%20page/bayangkan.png">
+
+  <div class="divider"></div>
+
+  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/Image%20landing%20page/apa%20yang%20best.png">
+
+  <div class="divider"></div>
+
+  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/Image%20landing%20page/apa%20anda%20dapat.png">
+
+  <div class="divider"></div>
+
+  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/Image%20landing%20page/semuanya%20disusun.png">
+  <img class="img" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/Image%20landing%20page/pdf%20dan%20video.png">
+
+  <div class="divider"></div>
+
+  <img class="img" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/Image%20landing%20page/apa%20jadi.png">
+
+  <div class="divider"></div>
+
+  <img class="img" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/new%203%20image%20landing%20page/utk%20siapa.png">
+
+  <div class="divider"></div>
+
+  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/new%203%20image%20landing%20page/harga%20terkini.png">
+
+
+
+<!-- 💰 PRICING SECTION -->
+
+<div class="pricing" id="pricing">
+    <!-- dynamic pricing will load here -->
+</div>
+
+  <div class="divider"></div>
+
+  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%20Galeri%20di%20Chengdu/Screenshot%202026-06-27%20111151.png">
+  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%20Galeri%20di%20Chengdu/Screenshot%202026-06-27%20111204.png">
+  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%20Galeri%20di%20Chengdu/Screenshot%202026-06-27%20111216.png">
+
+
+  <div class="divider"></div>
+
+  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/Image%20landing%20page/Screenshot%202026-06-27%20091957.png">
+
+
+</div>
+
+
+<div id="buyPanel" class="buy-panel">
+
+    <div class="buy-box">
+
+        <h2>✋ Saya Berminat</h2>
+
+        <p id="selectedProduct"></p>
+
+        <input id="buyerName" placeholder="Nama penuh">
+
+        <input id="buyerPhone" placeholder="01xxxxxxxx">
+
+        <input id="buyerEmail" placeholder="xxxx@email.com">
+
+
+        <button onclick="submitOrder()">
+            Lets go..🛒
+        </button>
+
+        <button class="close-buy" onclick="closeBuy()">
+            TUTUP
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+  function showLogin(){
+
+      const password = prompt("Admin Password");
+
+      if(password == null) return;
+
+      google.script.run.withSuccessHandler(function(result){
+
+          if(result){
+              alert("Login Success!");
+              openAdminPanel();
+          } else {
+              alert("Wrong Password");
+          }
+
+      }).checkPassword(password);
+
+  }
+
+  function openAdminPanel(){
+
+      document.getElementById("adminPanel").style.display = "flex";
+
+      google.script.run.withSuccessHandler(function(data){
+
+          let html = "";
+
+          data.forEach((item, index) => {
+
+              html += `
+                  <div class="admin-item">
+                      <label>Title</label>
+                      <input id="title-${index}" value="${item.title}">
+
+                      <label>Price</label>
+                      <input id="price-${index}" value="${item.price}" type="number">
+
+                      <label>
+                          <input type="radio" name="active" value="${index}" ${item.active ? "checked" : ""}>
+                          ACTIVE
+                      </label>
+                  </div>
+              `;
+          });
+
+          document.getElementById("adminPricing").innerHTML = html;
+
+      }).getPricing();
+  }
+
+  function closeAdmin(){
+      document.getElementById("adminPanel").style.display = "none";
+  }
+
+  function savePricing(){
+
+      const items = document.querySelectorAll(".admin-item");
+
+      let data = [];
+
+      let activeIndex = document.querySelector('input[name="active"]:checked').value;
+
+      items.forEach((item, i) => {
+
+          data.push({
+              title: document.getElementById("title-"+i).value,
+              price: document.getElementById("price-"+i).value,
+              active: i == activeIndex
+          });
+
+      });
+
+      google.script.run.withSuccessHandler(function(){
+
+          alert("Saved!");
+
+          closeAdmin();
+          loadPricing();
+
+      }).savePricing(data);
+  }
+
+
+  function scrollToPrice() {
+
+      const section = document.getElementById("pricing");
+
+      // EDIT THIS VALUE 👇
+      const offset = 700;
+
+      const top = section.getBoundingClientRect().top + window.scrollY - offset;
+
+      window.scrollTo({
+          top: top,
+          behavior: "smooth"
+      });
+  }
+
+ 
+  function createSnow() {
+      const snow = document.createElement("div");
+      snow.classList.add("snowflake");
+
+      snow.innerHTML = "❄";
+
+      // random size
+      const size = Math.random() * 20 + 20;
+      snow.style.fontSize = size + "px";
+
+      // random left position
+      snow.style.left = Math.random() * window.innerWidth + "px";
+
+      // random speed
+      const duration = Math.random() * 5 + 5;
+      snow.style.animationDuration = duration + "s";
+
+      document.body.appendChild(snow);
+
+      // remove after falling
+      setTimeout(() => {
+          snow.remove();
+      }, duration * 1000);
+  }
+
+  // generate snow continuously
+  setInterval(createSnow, 150);
+
+
+  function loadPricing() {
+
+      google.script.run.withSuccessHandler(function(data){
+
+          let html = "";
+
+          data.forEach(item => {
+
+              let activeClass = item.active ? "active" : "";
+
+              let disabledClass = item.active ? "" : "disabled";
+
+              let buttonHTML = item.active
+                  ? `<button onclick="buyNow('${item.title}', ${item.price})">
+                          SAYA MAU✋
+                      </button>`
+                  : `<button disabled>COMING SOON</button>`;
+
+              html += `
+                  <div class="card ${activeClass} ${disabledClass}">
+                      <h3>${item.title}</h3>
+                      <div class="price">RM${item.price}</div>
+                      ${buttonHTML}
+                  </div>
+              `;
+
+          });
+
+          document.getElementById("pricing").innerHTML = html;
+
+      }).getPricing();
+
+  }
+
+  window.onload = function() {
+      loadPricing();
+      setInterval(createSnow, 150);
+  };
+
+
+  let selectedTitle = "";
+  let selectedPrice = "";
+
+
+  function buyNow(title, price){
+
+      selectedTitle = title;
+      selectedPrice = price;
+
+
+      document.getElementById("selectedProduct").innerHTML =
+          title + " - RM" + price;
+
+
+      document.getElementById("buyPanel").style.display = "flex";
+
+  }
+
+
+
+  function closeBuy(){
+
+      document.getElementById("buyPanel").style.display="none";
+
+  }
+
+
+
+  function submitOrder(){
+
+      let name =
+      document.getElementById("buyerName").value;
+
+
+      let phone =
+      document.getElementById("buyerPhone").value;
+
+
+      let email =
+      document.getElementById("buyerEmail").value;
+
+
+
+      if(!name || !phone || !email){
+
+          alert("Sila isi semua maklumat");
+
+          return;
+
+      }
+
+      // CLOSE FORM PANEL AFTER CLICK LETS GO
+      document.getElementById("buyPanel").style.display="none";
+
+
+
+
+      const payload = {
+
+          billName:
+          "E-Book Travel DIY Winter",
+
+          billDescription:
+          "Pembayaran Ebook Travel",
+
+
+          billPriceSetting: 1,
+
+          billChargeToCustomer: 0,
+
+          billPayorInfo: 1,
+
+
+          // CHANGE PRICE HERE
+          billAmount: selectedPrice * 100,
+
+
+          billReturnUrl:
+          "https://script.google.com/macros/s/AKfycbw-vLglyP-0Fi4fH5zU8dn0YDZ4YHh8h2i6eDfVER5O/dev"
+          + "?phone=" + encodeURIComponent(phone),
+
+
+          billCallbackUrl:
+          "https://script.google.com/macros/s/AKfycbw-vLglyP-0Fi4fH5zU8dn0YDZ4YHh8h2i6eDfVER5O/dev"
+          + "?phone=" + encodeURIComponent(phone),
+
+
+          billExternalReferenceNo:
+          phone,
+
+
+          billTo:
+          name,
+
+
+          billEmail:
+          email,
+
+
+          billPhone:
+          phone
+
+      };
+
+
+
+      // open loading popup first
+      window.paymentPopup =
+      window.open(
+          "",
+          "_blank",
+          "width=500,height=600"
+      );
+
+
+
+      if(window.paymentPopup){
+
+          window.paymentPopup.document.write(`
+
+          <h2 style="text-align:center;margin-top:100px">
+          ⏳ Sila tunggu...
+          <br><br>
+          Membuka pembayaran
+          </h2>
+
+          `);
+
+      }
+
+      google.script.run.saveOrder(
+          name,
+          phone,
+          selectedPrice,
+          "E-Book Travel DIY Winter",
+          selectedTitle
+      );
+
+
+
+      google.script.run
+
+      .withSuccessHandler(function(result){
+
+
+          if(result && result.BillCode){
+
+
+              const payURL =
+              "https://dev.toyyibpay.com/"
+              + result.BillCode;
+
+
+
+              window.paymentPopup.location.href =
+              payURL;
+
+
+          }
+
+          else{
+
+
+              alert("Gagal cipta bill");
+
+          }
+
+
+      })
+
+
+      .withFailureHandler(function(err){
+
+          console.log(err);
+
+          alert("Error create bill");
+
+
+      })
+
+
+      .createBillServer(payload);
+
+
+
+  }
+
+  function showDownloadPanel(){
+
+      document.getElementById("downloadPanel")
+      .style.display="flex";
+
+  }
+
+
+  function closeDownload(){
+
+      document.getElementById("downloadPanel")
+      .style.display="none";
+
+  }
+
+
+
+  function checkEbook(){
+
+
+  const phone =
+  document.getElementById("downloadPhone").value;
+
+
+
+  google.script.run
+  .withSuccessHandler(function(result){
+
+
+  let box =
+  document.getElementById("downloadResult");
+
+
+
+  if(result.success){
+
+
+  box.innerHTML = `
+
+
+  <h3>
+  ✅ Pembelian Dijumpai
+  </h3>
+
+
+  <p>
+  Nama: ${result.name}
+  </p>
+
+
+  <p>
+  ${result.product}
+  </p>
+
+
+  <br>
+
+
+ <button 
+  onclick="downloadEbook()"
+  style="
+  background:#2563eb;
+  color:white;
+  padding:15px;
+  font-size:22px;
+  border-radius:10px;
+  ">
+
+  📘 Download Ebook Sekarang
+
+  </button>
+
+
+  </a>
+
+
+  `;
+
+
+
+  }else{
+
+
+  box.innerHTML=`
+
+  <h3 style="color:red">
+
+  ❌ Pembelian tidak dijumpai
+
+  </h3>
+
+
+  <p>
+  Pastikan nombor telefon sama seperti semasa pembelian.
+  </p>
+
+
+  `;
+
+  }
+
+
+
+  })
+  .checkPurchase(phone);
+
+
+
+  }
+
+  function downloadEbook(){
+
+      google.script.run
+      .withSuccessHandler(function(link){
+
+          window.open(link,"_blank");
+
+      })
+      .getEbookLink();
+
+  }
+
+
+
+</script>
+
+<div class="floating-price" onclick="scrollToPrice()">
+    💰 Jom Tengok Harga
+</div>
+
+
+</body>
+</html>
