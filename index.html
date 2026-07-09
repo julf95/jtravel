@@ -604,54 +604,38 @@ Tutup
   const API =
   "https://script.google.com/macros/s/AKfycbzVtE6dpNE_D7-5pgXFg_7cp8kauoHta_u0tWXVJixSCrw_CUy_D1YFdWwOJrk3IAd1dg/exec";
 
-  function showLogin(){
+  async function showLogin(){
 
       const password = prompt("Admin Password");
-
+  
       if(password == null) return;
-
-      google.script.run.withSuccessHandler(function(result){
-
-          if(result){
-              alert("Login Success!");
-              openAdminPanel();
-          } else {
-              alert("Wrong Password");
-          }
-
-      }).checkPassword(password);
-
+  
+      const response = await fetch(API,{
+          method:"POST",
+          body:JSON.stringify({
+              api:"checkPassword",
+              password:password
+          })
+      });
+  
+      const result = await response.json();
+  
+      if(result){
+          alert("Login Success!");
+          openAdminPanel();
+      }else{
+          alert("Wrong Password");
+      }
+  
   }
 
   function openAdminPanel(){
 
       document.getElementById("adminPanel").style.display = "flex";
 
-      google.script.run.withSuccessHandler(function(data){
-
-          let html = "";
-
-          data.forEach((item, index) => {
-
-              html += `
-                  <div class="admin-item">
-                      <label>Title</label>
-                      <input id="title-${index}" value="${item.title}">
-
-                      <label>Price</label>
-                      <input id="price-${index}" value="${item.price}" type="number">
-
-                      <label>
-                          <input type="radio" name="active" value="${index}" ${item.active ? "checked" : ""}>
-                          ACTIVE
-                      </label>
-                  </div>
-              `;
-          });
-
-          document.getElementById("adminPricing").innerHTML = html;
-
-      }).getPricing();
+      fetch(API + "?api=getPricing")
+      .then(r=>r.json())
+      .then(function(data){
   }
 
   function closeAdmin(){
