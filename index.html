@@ -686,32 +686,49 @@ Tutup
       document.getElementById("adminPanel").style.display = "none";
   }
 
-  function savePricing(){
+  async function savePricing(){
 
       const items = document.querySelectorAll(".admin-item");
-
+  
       let data = [];
-
-      let activeIndex = document.querySelector('input[name="active"]:checked').value;
-
-      items.forEach((item, i) => {
-
+  
+      let activeIndex =
+      document.querySelector('input[name="active"]:checked').value;
+  
+      items.forEach((item,i)=>{
+  
           data.push({
-              title: document.getElementById("title-"+i).value,
-              price: document.getElementById("price-"+i).value,
-              active: i == activeIndex
+  
+              title:document.getElementById("title-"+i).value,
+  
+              price:document.getElementById("price-"+i).value,
+  
+              active:i==activeIndex
+  
           });
-
+  
       });
-
-      google.script.run.withSuccessHandler(function(){
-
-          alert("Saved!");
-
-          closeAdmin();
-          loadPricing();
-
-      }).savePricing(data);
+  
+      await fetch(API,{
+  
+          method:"POST",
+  
+          body:JSON.stringify({
+  
+              api:"savePricing",
+  
+              pricing:data
+  
+          })
+  
+      });
+  
+      alert("Saved!");
+  
+      closeAdmin();
+  
+      loadPricing();
+  
   }
 
 
