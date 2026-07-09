@@ -607,52 +607,102 @@ Tutup
   function showLogin(){
 
       const password = prompt("Admin Password");
-
+  
       if(password == null) return;
-
-      google.script.run.withSuccessHandler(function(result){
-
+  
+      fetch(API,{
+  
+          method:"POST",
+  
+          headers:{
+              "Content-Type":"application/json"
+          },
+  
+          body:JSON.stringify({
+  
+              api:"checkPassword",
+  
+              password:password
+  
+          })
+  
+      })
+  
+      .then(r=>r.json())
+  
+      .then(result=>{
+  
           if(result){
+  
               alert("Login Success!");
+  
               openAdminPanel();
-          } else {
+  
+          }else{
+  
               alert("Wrong Password");
+  
           }
-
-      }).checkPassword(password);
-
+  
+      })
+  
+      .catch(err=>{
+  
+          console.error(err);
+  
+          alert("Cannot connect to server.");
+  
+      });
+  
   }
 
   function openAdminPanel(){
 
       document.getElementById("adminPanel").style.display = "flex";
 
-      google.script.run.withSuccessHandler(function(data){
+      fetch(API + "?api=getPricing")
 
+      .then(r=>r.json())
+      
+      .then(function(data){
+      
           let html = "";
-
-          data.forEach((item, index) => {
-
+      
+          data.forEach((item,index)=>{
+      
               html += `
                   <div class="admin-item">
+      
                       <label>Title</label>
+      
                       <input id="title-${index}" value="${item.title}">
-
+      
                       <label>Price</label>
+      
                       <input id="price-${index}" value="${item.price}" type="number">
-
+      
                       <label>
-                          <input type="radio" name="active" value="${index}" ${item.active ? "checked" : ""}>
+      
+                          <input type="radio"
+      
+                          name="active"
+      
+                          value="${index}"
+      
+                          ${item.active ? "checked":""}>
+      
                           ACTIVE
+      
                       </label>
+      
                   </div>
               `;
+      
           });
-
+      
           document.getElementById("adminPricing").innerHTML = html;
-
-      }).getPricing();
-  }
+      
+      });
 
   function closeAdmin(){
       document.getElementById("adminPanel").style.display = "none";
