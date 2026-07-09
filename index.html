@@ -503,7 +503,7 @@ Tutup
       muted
       loop
       playsinline
-      preload="metadata">
+      preload="auto">
 
       <source
           src="https://raw.githubusercontent.com/julf95/classroom/main/0628%20(2).mp4"
@@ -511,28 +511,28 @@ Tutup
 
   </video>
 
-  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%203%20image%20landing%20page/intro%20diri.png">
+  <img class="img img-large" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/new%203%20image%20landing%20page/intro%20diri.png">
 
-  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%203%20image%20landing%20page/gambar%203%20intro.png">
-  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%203%20image%20landing%20page/little%20swiss.png">
+  <img class="img img-large" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/new%203%20image%20landing%20page/gambar%203%20intro.png">
+  <img class="img img-large" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/new%203%20image%20landing%20page/little%20swiss.png">
 
   
 
   <div class="divider"></div>
 
-  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/Image%20landing%20page/bayangkan.png">
+  <img class="img" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/Image%20landing%20page/bayangkan.png">
 
   <div class="divider"></div>
 
-  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/Image%20landing%20page/apa%20yang%20best.png">
+  <img class="img" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/Image%20landing%20page/apa%20yang%20best.png">
 
   <div class="divider"></div>
 
-  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/Image%20landing%20page/apa%20anda%20dapat.png">
+  <img class="img" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/Image%20landing%20page/apa%20anda%20dapat.png">
 
   <div class="divider"></div>
 
-  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/Image%20landing%20page/semuanya%20disusun.png">
+  <img class="img" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/Image%20landing%20page/semuanya%20disusun.png">
   <img class="img" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/Image%20landing%20page/pdf%20dan%20video.png">
 
   <div class="divider"></div>
@@ -545,7 +545,7 @@ Tutup
 
   <div class="divider"></div>
 
-  <img class="img" src="https://raw.githubusercontent.com/julf95/classroom/main/new%203%20image%20landing%20page/harga%20terkini.png">
+  <img class="img" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/new%203%20image%20landing%20page/harga%20terkini.png">
 
 
 
@@ -557,9 +557,9 @@ Tutup
 
   <div class="divider"></div>
 
-  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%20Galeri%20di%20Chengdu/Screenshot%202026-06-27%20111151.png">
-  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%20Galeri%20di%20Chengdu/Screenshot%202026-06-27%20111204.png">
-  <img class="img img-large" src="https://raw.githubusercontent.com/julf95/classroom/main/new%20Galeri%20di%20Chengdu/Screenshot%202026-06-27%20111216.png">
+  <img class="img img-large" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/new%20Galeri%20di%20Chengdu/Screenshot%202026-06-27%20111151.png">
+  <img class="img img-large" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/new%20Galeri%20di%20Chengdu/Screenshot%202026-06-27%20111204.png">
+  <img class="img img-large" src="https://cdn.jsdelivr.net/gh/julf95/classroom@main/new%20Galeri%20di%20Chengdu/Screenshot%202026-06-27%20111216.png">
 
 
   <div class="divider"></div>
@@ -601,108 +601,55 @@ Tutup
 
 <script>
 
-  const API =
-  "https://script.google.com/macros/s/AKfycbzVtE6dpNE_D7-5pgXFg_7cp8kauoHta_u0tWXVJixSCrw_CUy_D1YFdWwOJrk3IAd1dg/exec";
-
   function showLogin(){
 
       const password = prompt("Admin Password");
-  
+
       if(password == null) return;
-  
-      fetch(API,{
-  
-          method:"POST",
-  
-          headers:{
-              "Content-Type":"application/json"
-          },
-  
-          body:JSON.stringify({
-  
-              api:"checkPassword",
-  
-              password:password
-  
-          })
-  
-      })
-  
-      .then(r=>r.json())
-  
-      .then(result=>{
-  
+
+      google.script.run.withSuccessHandler(function(result){
+
           if(result){
-  
               alert("Login Success!");
-  
               openAdminPanel();
-  
-          }else{
-  
+          } else {
               alert("Wrong Password");
-  
           }
-  
-      })
-  
-      .catch(err=>{
-  
-          console.error(err);
-  
-          alert("Cannot connect to server.");
-  
-      });
-  
+
+      }).checkPassword(password);
+
   }
 
   function openAdminPanel(){
 
       document.getElementById("adminPanel").style.display = "flex";
 
-      fetch(API + "?api=getPricing")
+      google.script.run.withSuccessHandler(function(data){
 
-      .then(r=>r.json())
-      
-      .then(function(data){
-      
           let html = "";
-      
-          data.forEach((item,index)=>{
-      
+
+          data.forEach((item, index) => {
+
               html += `
                   <div class="admin-item">
-      
                       <label>Title</label>
-      
                       <input id="title-${index}" value="${item.title}">
-      
+
                       <label>Price</label>
-      
                       <input id="price-${index}" value="${item.price}" type="number">
-      
+
                       <label>
-      
-                          <input type="radio"
-      
-                          name="active"
-      
-                          value="${index}"
-      
-                          ${item.active ? "checked":""}>
-      
+                          <input type="radio" name="active" value="${index}" ${item.active ? "checked" : ""}>
                           ACTIVE
-      
                       </label>
-      
                   </div>
               `;
-      
           });
-      
+
           document.getElementById("adminPricing").innerHTML = html;
-      
-      });
+
+      }).getPricing();
+  }
 
   function closeAdmin(){
       document.getElementById("adminPanel").style.display = "none";
@@ -782,56 +729,38 @@ Tutup
   setInterval(createSnow, 150);
 
 
-  function loadPricing(){
+  function loadPricing() {
 
-      fetch(API + "?api=getPricing")
-  
-      .then(r => r.json())
-  
-      .then(data => {
-  
+      google.script.run.withSuccessHandler(function(data){
+
           let html = "";
-  
+
           data.forEach(item => {
-  
+
               let activeClass = item.active ? "active" : "";
-  
+
               let disabledClass = item.active ? "" : "disabled";
-  
+
               let buttonHTML = item.active
-  
                   ? `<button onclick="buyNow('${item.title}', ${item.price})">
-  
                           SAYA MAU✋
-  
-                     </button>`
-  
+                      </button>`
                   : `<button disabled>COMING SOON</button>`;
-  
+
               html += `
-  
                   <div class="card ${activeClass} ${disabledClass}">
-  
                       <h3>${item.title}</h3>
-  
-                      <div class="price">
-  
-                          RM${item.price}
-  
-                      </div>
-  
+                      <div class="price">RM${item.price}</div>
                       ${buttonHTML}
-  
                   </div>
-  
               `;
-  
+
           });
-  
+
           document.getElementById("pricing").innerHTML = html;
-  
-      });
-  
+
+      }).getPricing();
+
   }
 
   window.onload = function() {
