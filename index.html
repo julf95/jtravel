@@ -601,6 +601,9 @@ Tutup
 
 <script>
 
+  const API =
+  "https://script.google.com/macros/s/AKfycbzVtE6dpNE_D7-5pgXFg_7cp8kauoHta_u0tWXVJixSCrw_CUy_D1YFdWwOJrk3IAd1dg/exec";
+
   function showLogin(){
 
       const password = prompt("Admin Password");
@@ -729,38 +732,56 @@ Tutup
   setInterval(createSnow, 150);
 
 
-  function loadPricing() {
+  function loadPricing(){
 
-      google.script.run.withSuccessHandler(function(data){
-
+      fetch(API + "?api=getPricing")
+  
+      .then(r => r.json())
+  
+      .then(data => {
+  
           let html = "";
-
+  
           data.forEach(item => {
-
+  
               let activeClass = item.active ? "active" : "";
-
+  
               let disabledClass = item.active ? "" : "disabled";
-
+  
               let buttonHTML = item.active
+  
                   ? `<button onclick="buyNow('${item.title}', ${item.price})">
+  
                           SAYA MAU✋
-                      </button>`
+  
+                     </button>`
+  
                   : `<button disabled>COMING SOON</button>`;
-
+  
               html += `
+  
                   <div class="card ${activeClass} ${disabledClass}">
+  
                       <h3>${item.title}</h3>
-                      <div class="price">RM${item.price}</div>
+  
+                      <div class="price">
+  
+                          RM${item.price}
+  
+                      </div>
+  
                       ${buttonHTML}
+  
                   </div>
+  
               `;
-
+  
           });
-
+  
           document.getElementById("pricing").innerHTML = html;
-
-      }).getPricing();
-
+  
+      });
+  
   }
 
   window.onload = function() {
