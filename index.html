@@ -731,37 +731,68 @@ Tutup
 
   function loadPricing() {
 
-      google.script.run.withSuccessHandler(function(data){
-
+      fetch(
+      "https://script.google.com/macros/s/AKfycbzVtE6dpNE_D7-5pgXFg_7cp8kauoHta_u0tWXVJixSCrw_CUy_D1YFdWwOJrk3IAd1dg/exec?api=getPricing"
+      )
+      
+      .then(response => response.json())
+      
+      .then(data => {
+      
+      
           let html = "";
-
+      
           data.forEach(item => {
-
+      
+      
               let activeClass = item.active ? "active" : "";
-
+      
               let disabledClass = item.active ? "" : "disabled";
-
+      
+      
               let buttonHTML = item.active
-                  ? `<button onclick="buyNow('${item.title}', ${item.price})">
-                          SAYA MAU✋
-                      </button>`
-                  : `<button disabled>COMING SOON</button>`;
-
+      
+              ? `<button onclick="buyNow('${item.title}', ${item.price})">
+                      SAYA MAU✋
+                </button>`
+      
+              : `<button disabled>
+                      COMING SOON
+                </button>`;
+      
+      
               html += `
-                  <div class="card ${activeClass} ${disabledClass}">
-                      <h3>${item.title}</h3>
-                      <div class="price">RM${item.price}</div>
-                      ${buttonHTML}
+      
+              <div class="card ${activeClass} ${disabledClass}">
+      
+                  <h3>${item.title}</h3>
+      
+                  <div class="price">
+                      RM${item.price}
                   </div>
+      
+                  ${buttonHTML}
+      
+              </div>
+      
               `;
-
+      
+      
           });
-
+      
+      
           document.getElementById("pricing").innerHTML = html;
-
-      }).getPricing();
-
-  }
+      
+      
+      })
+      
+      .catch(error=>{
+      
+          console.log(error);
+      
+          alert("Gagal load harga");
+      
+      });
 
   window.onload = function() {
       loadPricing();
