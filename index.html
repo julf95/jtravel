@@ -977,13 +977,17 @@ Tutup
 
       }
 
-      google.script.run.saveOrder(
-          name,
-          phone,
-          selectedPrice,
-          "E-Book Travel DIY Winter",
-          selectedTitle
-      );
+      fetch(API, {
+          method: "POST",
+          body: JSON.stringify({
+              api: "saveOrder",
+              name: name,
+              phone: phone,
+              price: selectedPrice,
+              product: "E-Book Travel DIY Winter",
+              packageName: selectedTitle
+          })
+      });
 
 
 
