@@ -632,10 +632,54 @@ Tutup
   function openAdminPanel(){
 
       document.getElementById("adminPanel").style.display = "flex";
-
+  
       fetch(API + "?api=getPricing")
+  
       .then(r=>r.json())
+  
       .then(function(data){
+  
+          let html = "";
+  
+          data.forEach((item,index)=>{
+  
+              html += `
+                  <div class="admin-item">
+  
+                      <label>Title</label>
+  
+                      <input
+                      id="title-${index}"
+                      value="${item.title}">
+  
+                      <label>Price</label>
+  
+                      <input
+                      id="price-${index}"
+                      value="${item.price}"
+                      type="number">
+  
+                      <label>
+  
+                          <input
+                          type="radio"
+                          name="active"
+                          value="${index}"
+                          ${item.active ? "checked" : ""}>
+  
+                          ACTIVE
+  
+                      </label>
+  
+                  </div>
+              `;
+  
+          });
+  
+          document.getElementById("adminPricing").innerHTML = html;
+  
+      });
+  
   }
 
   function closeAdmin(){
