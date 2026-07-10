@@ -1071,40 +1071,36 @@ Tutup
 
 
 
-  google.script.run
-  .withSuccessHandler(function(result){
+  fetch(API + "?api=checkPurchase&phone=" + encodeURIComponent(phone))
 
-
+  .then(response=>response.json())
+  
+  .then(result=>{
+  
+  
   let box =
   document.getElementById("downloadResult");
-
-
-
+  
+  
   if(result.success){
-
-
+  
+  
   box.innerHTML = `
-
-
+  
   <h3>
   ✅ Pembelian Dijumpai
   </h3>
-
-
+  
   <p>
   Nama: ${result.name}
   </p>
-
-
+  
   <p>
   ${result.product}
   </p>
-
-
-  <br>
-
-
- <button 
+  
+  
+  <button 
   onclick="downloadEbook()"
   style="
   background:#2563eb;
@@ -1113,44 +1109,39 @@ Tutup
   font-size:22px;
   border-radius:10px;
   ">
-
+  
   📘 Download Ebook Sekarang
-
+  
   </button>
-
-
-  </a>
-
-
+  
   `;
-
-
-
+  
+  
   }else{
-
-
+  
+  
   box.innerHTML=`
-
+  
   <h3 style="color:red">
-
   ❌ Pembelian tidak dijumpai
-
   </h3>
-
-
+  
   <p>
   Pastikan nombor telefon sama seperti semasa pembelian.
   </p>
-
-
+  
   `;
-
+  
   }
-
-
-
+  
+  
   })
-  .checkPurchase(phone);
+  
+  .catch(error=>{
+  
+  console.log(error);
+  
+  });
 
 
 
@@ -1158,14 +1149,24 @@ Tutup
 
   function downloadEbook(){
 
-      google.script.run
-      .withSuccessHandler(function(link){
-
-          window.open(link,"_blank");
-
+      fetch(API + "?api=getEbookLink")
+      
+      .then(response=>response.json())
+      
+      .then(data=>{
+  
+          window.open(data.link,"_blank");
+  
       })
-      .getEbookLink();
-
+  
+      .catch(error=>{
+  
+          console.log(error);
+  
+          alert("Tidak dapat buka ebook");
+  
+      });
+  
   }
 
 
