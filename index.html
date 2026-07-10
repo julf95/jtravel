@@ -991,49 +991,57 @@ Tutup
 
 
 
-      google.script.run
-
-      .withSuccessHandler(function(result){
-
-
+      fetch(API,{
+          method:"POST",
+          body:JSON.stringify({
+              api:"createBill",
+              payload:payload
+          })
+      })
+      .then(response=>response.json())
+      .then(result=>{
+      
+      
+          console.log(result);
+      
+      
           if(result && result.BillCode){
-
-
+      
+      
               const payURL =
               "https://dev.toyyibpay.com/"
               + result.BillCode;
-
-
-
+      
+      
               window.paymentPopup.location.href =
               payURL;
-
-
-          }
-
-          else{
-
-
+      
+      
+          }else{
+      
+      
               alert("Gagal cipta bill");
-
+      
+      
+              window.paymentPopup.close();
+      
           }
-
-
+      
+      
       })
-
-
-      .withFailureHandler(function(err){
-
-          console.log(err);
-
+      .catch(error=>{
+      
+      
+          console.log(error);
+      
+      
           alert("Error create bill");
-
-
-      })
-
-
-      .createBillServer(payload);
-
+      
+      
+          window.paymentPopup.close();
+      
+      
+      });
 
 
   }
