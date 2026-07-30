@@ -26,10 +26,19 @@
     }
 
     .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    @media (min-width:1024px){
+    
+        .container{
+            max-width:700px;   /* Change this */
+            margin:0 auto;
+        }
+    
     }
 
     /* PRICE SECTION */
@@ -410,6 +419,13 @@
         margin-top:20px;
 
     }
+    
+    .download-box button{
+        padding:15px 25px;
+        font-size:18px;
+        width:90%;
+        border-radius:10px;
+    }
 
   </style>
 </head>
@@ -463,9 +479,9 @@ placeholder="Contoh: 0104464144">
 <br>
 
 
-<button onclick="checkEbook()">
+<button id="checkBtn" onclick="checkEbook()">
 
-SEMAK PEMBELIAN
+🔍 SEMAK PEMBELIAN
 
 </button>
 
@@ -1065,87 +1081,111 @@ Tutup
 
   function checkEbook(){
 
-
-  const phone =
-  document.getElementById("downloadPhone").value;
-
-
-
-  fetch(API + "?api=checkPurchase&phone=" + encodeURIComponent(phone))
-
-  .then(response=>response.json())
-  
-  .then(result=>{
-  
-  
-  let box =
-  document.getElementById("downloadResult");
-  
-  
-  if(result.success){
-  
-  
-  box.innerHTML = `
-  
-  <h3>
-  ✅ Pembelian Dijumpai
-  </h3>
-  
-  <p>
-  Nama: ${result.name}
-  </p>
-  
-  <p>
-  ${result.product}
-  </p>
-  
-  
-  <button 
-  onclick="downloadEbook()"
-  style="
-  background:#2563eb;
-  color:white;
-  padding:15px;
-  font-size:22px;
-  border-radius:10px;
-  ">
-  
-  📘 Download Ebook Sekarang
-  
-  </button>
-  
-  `;
-  
-  
-  }else{
-  
-  
-  box.innerHTML=`
-  
-  <h3 style="color:red">
-  ❌ Pembelian tidak dijumpai
-  </h3>
-  
-  <p>
-  Pastikan nombor telefon sama seperti semasa pembelian.
-  </p>
-  
-  `;
-  
-  }
-  
-  
-  })
-  
-  .catch(error=>{
-  
-  console.log(error);
-  
-  });
-
-
-
-  }
+      const phone =
+      document.getElementById("downloadPhone").value;
+    
+      const btn = document.getElementById("checkBtn");
+    
+    
+      if(!phone){
+    
+          alert("Sila masukkan nombor telefon");
+          return;
+    
+      }
+    
+    
+      // START LOADING
+      btn.disabled = true;
+      btn.innerHTML = "⏳ Sedang mencari...";
+    
+    
+      fetch(API + "?api=checkPurchase&phone=" + encodeURIComponent(phone))
+    
+      .then(response=>response.json())
+    
+      .then(result=>{
+    
+    
+          let box =
+          document.getElementById("downloadResult");
+    
+    
+          if(result.success){
+    
+    
+              box.innerHTML = `
+    
+              <h3>
+              ✅ Pembelian Dijumpai
+              </h3>
+    
+              <p>
+              Nama: ${result.name}
+              </p>
+    
+              <p>
+              ${result.product}
+              </p>
+    
+    
+              <button 
+              onclick="downloadEbook()"
+              style="
+              background:#2563eb;
+              color:white;
+              padding:15px;
+              font-size:22px;
+              border-radius:10px;
+              ">
+    
+              📘 Download Ebook Sekarang
+    
+              </button>
+    
+              `;
+    
+    
+          }else{
+    
+    
+              box.innerHTML=`
+    
+              <h3 style="color:red">
+              ❌ Pembelian tidak dijumpai
+              </h3>
+    
+              <p>
+              Pastikan nombor telefon sama seperti semasa pembelian.
+              </p>
+    
+              `;
+    
+          }
+    
+    
+      })
+    
+      .catch(error=>{
+    
+          console.log(error);
+    
+          document.getElementById("downloadResult").innerHTML =
+          "❌ Ralat semasa mencari";
+    
+    
+      })
+    
+      .finally(()=>{
+    
+          // STOP LOADING
+          btn.disabled = false;
+          btn.innerHTML = "🔍 SEMAK PEMBELIAN";
+    
+      });
+    
+    
+    }
 
   function downloadEbook(){
 
