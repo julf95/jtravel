@@ -430,6 +430,41 @@
         width:90%;
         border-radius:10px;
     }
+    
+    #whatsappBtn{
+
+        position:fixed;
+    
+        top:155px;   /* below Ebook button */
+        right:15px;
+    
+        background:#25D366;
+    
+        color:white;
+    
+        padding:20px 28px;
+    
+        border-radius:30px;
+    
+        cursor:pointer;
+    
+        z-index:99999;
+    
+        font-size:20px;
+    
+        font-weight:bold;
+    
+        box-shadow:0 5px 15px rgba(0,0,0,.25);
+    
+        transition:.25s;
+    
+    }
+    
+    #whatsappBtn:hover{
+    
+        transform:scale(1.05);
+    
+    }
 
   </style>
 </head>
@@ -440,8 +475,44 @@
     🔒 Admin
 </div>
 
+<div id="loginPanel" class="admin-panel">
+
+  <div class="admin-box">
+
+    <h2>🔐 ADMIN LOGIN</h2>
+
+    <input 
+      id="adminPassword"
+      type="password"
+      placeholder="Masukkan password"
+      style="
+      width:90%;
+      padding:15px;
+      font-size:20px;
+      border-radius:10px;
+      border:1px solid #ccc;
+      ">
+
+    <br><br>
+
+    <button onclick="checkAdminLogin()">
+        LOGIN
+    </button>
+
+    <button onclick="closeLogin()">
+        TUTUP
+    </button>
+
+  </div>
+
+</div>
+
 <div id="downloadBtn" onclick="showDownloadPanel()">
     📘 eBook Anda
+</div>
+
+<div id="whatsappBtn" onclick="contactWhatsApp()">
+    📞 WhatsApp Saya
 </div>
 
 <div id="adminPanel" class="admin-panel">
@@ -624,30 +695,78 @@ Tutup
   const API =
   "https://script.google.com/macros/s/AKfycbzVtE6dpNE_D7-5pgXFg_7cp8kauoHta_u0tWXVJixSCrw_CUy_D1YFdWwOJrk3IAd1dg/exec";
 
-  async function showLogin(){
+  function showLogin(){
 
-      const password = prompt("Admin Password");
+        document.getElementById("loginPanel").style.display="flex";
+    
+    }
   
-      if(password == null) return;
+  function closeLogin(){
+
+        document.getElementById("loginPanel").style.display="none";
+    
+    }
+    
+    
+    async function checkAdminLogin(){
+    
+        const password =
+        document.getElementById("adminPassword").value;
+    
+    
+        if(!password){
+    
+            alert("Sila masukkan password");
+            return;
+    
+        }
+    
+    
+        const response = await fetch(API,{
+    
+            method:"POST",
+    
+            body:JSON.stringify({
+    
+                api:"checkPassword",
+    
+                password:password
+    
+            })
+    
+        });
+    
+    
+        const result = await response.json();
+    
+    
+        if(result){
+    
+            alert("Login Success!");
+    
+            closeLogin();
+    
+            openAdminPanel();
+    
+        }else{
+    
+            alert("Password salah");
+    
+        }
+    
+    }
   
-      const response = await fetch(API,{
-          method:"POST",
-          body:JSON.stringify({
-              api:"checkPassword",
-              password:password
-          })
-      });
-  
-      const result = await response.json();
-  
-      if(result){
-          alert("Login Success!");
-          openAdminPanel();
-      }else{
-          alert("Wrong Password");
-      }
-  
-  }
+  document.getElementById("adminPassword")
+    .addEventListener("keypress",function(e){
+    
+        if(e.key==="Enter"){
+    
+            checkAdminLogin();
+    
+        }
+    
+    });
+
 
   function openAdminPanel(){
 
@@ -1212,6 +1331,15 @@ Tutup
       });
   
   }
+  
+  function contactWhatsApp(){
+
+        window.open(
+            "https://wa.me/60104463136?text=Hi,%20saya%20mau%20bertanya%20tentang%20Ebook%20DIY%20Travel%20Winter.",
+            "_blank"
+        );
+    
+    }
 
 
 
